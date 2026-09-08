@@ -101,10 +101,9 @@ class TestEmployeeManagement:
         print("STEP 4: Navigating to Employee List")
         print("=" * 60)
 
-        dashboard.hover_and_click_pim()
-        time.sleep(1)
-        pim.click_employee_list()
-        time.sleep(2)
+        # Direct URL navigation — most reliable after a series of form submissions
+        driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewEmployeeList")
+        time.sleep(3)
         print("✅ Employee List page loaded.")
 
         # ── Step 5: Verify Each Employee in the List ─────────────────────
@@ -112,13 +111,16 @@ class TestEmployeeManagement:
         print("STEP 5: Verifying Employees in the List")
         print("=" * 60)
 
+        # Load ALL employees with empty search once, then scan row text for each name
+        pim.search_all_employees()
+        time.sleep(2)
+
         verified_count = 0
         for emp in added_employees:
             print(f"\n  → Searching for: {emp['first']} {emp['last']}")
             found = pim.verify_employee_in_list(emp["first"], emp["last"])
             if found:
                 verified_count += 1
-            time.sleep(1)
 
         assert verified_count == len(EMPLOYEES), \
             f"Only {verified_count}/{len(EMPLOYEES)} employees were verified in the list."
